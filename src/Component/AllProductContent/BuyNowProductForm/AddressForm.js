@@ -29,7 +29,7 @@ const AddressForm = ({ handleSubmit, formSetValue, formErrValue,addressPost,allF
   const [btnNone,setBtnNone] = useState('d-none')
   useEffect(() => {
     
-    axios.get('http://localhost:5000/address', {
+    axios.get('https://blooming-ocean-38409.herokuapp.com/address', {
       headers: {
         email: userDataInfo.email
       }
@@ -39,7 +39,7 @@ const AddressForm = ({ handleSubmit, formSetValue, formErrValue,addressPost,allF
       })
   }, [editAdderssResponse,addressPost])
   const handleBtnEdit = () => {
-    axios.delete('http://localhost:5000/address',{
+    axios.delete('https://blooming-ocean-38409.herokuapp.com/address',{
       headers:{
         email:userDataInfo.email
       }

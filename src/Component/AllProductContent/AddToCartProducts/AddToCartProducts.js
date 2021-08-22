@@ -11,7 +11,7 @@ const [data, setData] = useState([])
 // const history = useHistory()
 const [userDataInfo] = useContext(UserContext)
   useEffect(()=>{
-    axios.get('http://localhost:5000/cartProduct',{
+    axios.get('https://blooming-ocean-38409.herokuapp.com/cartProduct',{
       headers:{
         email:userDataInfo.email
       }
@@ -19,7 +19,7 @@ const [userDataInfo] = useContext(UserContext)
     .then(res =>{
       setData(res.data)
     })
-    // axios.get('http://localhost:5000/products/addToCartSingleProduct',{
+    // axios.get('https://blooming-ocean-38409.herokuapp.com/products/addToCartSingleProduct',{
     //     headers:{
     //       id:cartId
     //     }

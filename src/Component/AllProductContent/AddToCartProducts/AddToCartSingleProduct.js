@@ -12,7 +12,7 @@ const AddToCartSingleProduct = ({ data }) => {
     const handleProductCancel = (data) => {
         document.getElementById(`order${data}`).style.display = 'none'
         console.log(data)
-        axios.delete('http://localhost:5000/cartProduct', {
+        axios.delete('https://blooming-ocean-38409.herokuapp.com/cartProduct', {
             headers: {
                 id: data
             }

@@ -12,7 +12,7 @@ const SimpleCardForm = ({allFunctionalData }) => {
     const [userAddressDataForProduct,setUserAddressDataForProduct] =useState({})
     useEffect(() => {
     
-        axios.get('http://localhost:5000/address', {
+        axios.get('https://blooming-ocean-38409.herokuapp.com/address', {
           headers: {
             email: userDataInfo.email
           }
@@ -25,7 +25,7 @@ const SimpleCardForm = ({allFunctionalData }) => {
 
         // const allData = { ...info, date: new Date(), paymentId: paymentId,plans:id,userEmail:userData.email}
         if (data) {
-            axios.post('http://localhost:5000/products/userBuyProduct',{
+            axios.post('https://blooming-ocean-38409.herokuapp.com/products/userBuyProduct',{
                 id:allFunctionalData.buyNowProduct._id,
                 date:new Date(),
                 paymentId:data,

@@ -16,7 +16,7 @@ const ProductDetails = () => {
     const history = useHistory()
     // console.log(id)
     useEffect(() => {
-            axios.post('http://localhost:5000/products/singleProduct',{
+            axios.post('https://blooming-ocean-38409.herokuapp.com/products/singleProduct',{
                 id:id
             })
             .then(res => setSingleData(res.data))
@@ -43,7 +43,7 @@ const ProductDetails = () => {
     const handleAddToCart = () => {
         const {_id,price,description,title,image,category} = singleData 
        if(userDataInfo.isSignedIn){
-        axios.post('http://localhost:5000/cartProduct', {
+        axios.post('https://blooming-ocean-38409.herokuapp.com/cartProduct', {
             id: _id,
             description : description,
             category:category,

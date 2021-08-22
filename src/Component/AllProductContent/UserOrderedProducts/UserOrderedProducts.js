@@ -9,7 +9,7 @@ const UserOrderedProducts = () => {
     const [userDataInfo] = useContext(UserContext)
     const [userAddress,setUserAddress] = useState([])
     useEffect(()=>{
-        axios.get('http://localhost:5000/products/userOrderProducts',{
+        axios.get('https://blooming-ocean-38409.herokuapp.com/products/userOrderProducts',{
             headers:{
                 email:userDataInfo.email
               }
@@ -18,7 +18,7 @@ const UserOrderedProducts = () => {
             setUserOrderProductsData(res.data)
             console.log(res.data)
         })
-        axios.get('http://localhost:5000/address', {
+        axios.get('https://blooming-ocean-38409.herokuapp.com/address', {
           headers: {
             email: userDataInfo.email
           }

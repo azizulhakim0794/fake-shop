@@ -15,7 +15,7 @@ const AllProduct = () => {
     }
     useEffect(() => {
         // fetchProducts()
-        axios.get("http://localhost:5000/products/allProducts")
+        axios.get("https://blooming-ocean-38409.herokuapp.com/products/allProducts")
             .then(res => {
                 setAllData(res.data)
             })

@@ -53,7 +53,7 @@ const Checkout = ({allFunctionalData }) => {
   let {buyNowId} = useParams()
   // console.log(buyNowId)
   useEffect(()=>{
-    axios.get('http://localhost:5000/cartProduct/addToCartSingleProduct',{
+    axios.get('https://blooming-ocean-38409.herokuapp.com/cartProduct/addToCartSingleProduct',{
       headers:{
         id:buyNowId
       }

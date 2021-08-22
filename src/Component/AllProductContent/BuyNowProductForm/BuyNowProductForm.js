@@ -60,7 +60,7 @@ const BuyNowProductForm = () => {
     valueCheck(zip,setZipError)
     valueCheck(address,setAddressError)
     if (country.length && city.length && state.length && zip.length && address.length) {
-      axios.post('http://localhost:5000/address',{
+      axios.post('https://blooming-ocean-38409.herokuapp.com/address',{
         country:country,
         city:city,
         state:state,
@@ -80,7 +80,7 @@ const BuyNowProductForm = () => {
 
   }
   useEffect(()=>{
-    axios.get('http://localhost:5000/address', {
+    axios.get('https://blooming-ocean-38409.herokuapp.com/address', {
       headers: {
         email: userDataInfo.email
       }
@@ -92,7 +92,7 @@ const BuyNowProductForm = () => {
   })
   const [buyNowProduct,setBuyNowProduct] = useState({})
   useEffect(()=>{
-    axios.post('http://localhost:5000/products/singleProduct',{
+    axios.post('https://blooming-ocean-38409.herokuapp.com/products/singleProduct',{
       id:buyNowId
   })
   .then(res => setBuyNowProduct(res.data))
