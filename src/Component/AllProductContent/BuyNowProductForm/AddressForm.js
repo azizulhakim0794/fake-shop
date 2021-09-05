@@ -8,6 +8,7 @@ import TextField from '@material-ui/core/TextField'
 import axios from 'axios'
 import { Input, InputLabel } from '@material-ui/core';
 import { UserContext } from '../../../App'
+import { useHistory, useLocation } from 'react-router-dom'
 
 const useStyles = makeStyles({
   field: {
@@ -26,10 +27,10 @@ const AddressForm = ({ handleSubmit, formSetValue, formErrValue,addressPost,allF
   const [userAddressData, setUserAddressData] = useState({})
   const [editAdderssResponse,setEditAddressResponse] =  useState(false)
 
-  const [btnNone,setBtnNone] = useState('d-none')
+  // const [btnNone,setBtnNone] = useState('d-none')
   useEffect(() => {
     
-    axios.get('https://blooming-ocean-38409.herokuapp.com/address', {
+    axios.get('https://guarded-badlands-63189.herokuapp.com/address', {
       headers: {
         email: userDataInfo.email
       }
@@ -37,9 +38,9 @@ const AddressForm = ({ handleSubmit, formSetValue, formErrValue,addressPost,allF
       .then(res => {
         setUserAddressData(res.data)
       })
-  }, [editAdderssResponse,addressPost])
+  }, [editAdderssResponse,addressPost,userDataInfo.email])
   const handleBtnEdit = () => {
-    axios.delete('https://blooming-ocean-38409.herokuapp.com/address',{
+    axios.delete('https://guarded-badlands-63189.herokuapp.com/address',{
       headers:{
         email:userDataInfo.email
       }
@@ -48,12 +49,14 @@ const AddressForm = ({ handleSubmit, formSetValue, formErrValue,addressPost,allF
       setEditAddressResponse(res)
 
     })
-    setBtnNone('')
   }
-  // const newUserData = {...setUserDataInfo}
-  // newUserData.userAddressDataForProduct: userAddressData
-  // setUserDataInfo(newUserData)
-  // console.log(userDataInfo)
+
+  const history = useHistory();
+  const location = useLocation();
+  const { from } = location.state || { from: { pathname: "/" } };
+  const handleAddressBack=()=>{
+    history.replace(from);
+  }
   return (
     <Container size="sm" className="mt-5">
 
@@ -169,7 +172,7 @@ const AddressForm = ({ handleSubmit, formSetValue, formErrValue,addressPost,allF
        </Box>
       </form>}
       <div className="text-center">
-        <Button className="" onClick={allFunctionalData.handleBack}>
+        <Button className="" onClick={handleAddressBack}>
           Back
         </Button>
         <Button variant="contained" onClick={allFunctionalData.handleNext} color="primary" type="submit" >

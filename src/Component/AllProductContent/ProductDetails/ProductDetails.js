@@ -1,35 +1,46 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Button, Card, CardActions, CardContent, CardMedia, CircularProgress, Container, Grid, Typography } from '@material-ui/core';
+import { Button, Card, CardActions, CardContent, CircularProgress, Container, Grid, Typography } from '@material-ui/core';
 import { useHistory, useParams } from 'react-router-dom';
-import { makeStyles } from '@material-ui/core/styles';
 import axios from 'axios'
 import AddIcon from '@material-ui/icons/Add';
 import RemoveOutlinedIcon from '@material-ui/icons/RemoveOutlined';
 import StarOutlinedIcon from '@material-ui/icons/StarOutlined';
 import FavoriteBorderOutlinedIcon from '@material-ui/icons/FavoriteBorderOutlined';
 import { UserContext } from '../../../App';
+import { useDispatch } from 'react-redux';
+import { selectedProduct, removeSelectedProduct, selectBuyNowProduct, removeBuyNowProduct } from '../../../redux/actions/productActions';
+import { useSelector } from 'react-redux';
+import Footer from '../../CommonComponent/Footer/Footer';
 const ProductDetails = () => {
     const [value, setValue] = useState(1)
-    const [userDataInfo, setUserDataInfo] = useContext(UserContext)
-    const [singleData, setSingleData] = useState({})
+    const [userDataInfo] = useContext(UserContext)
+    const [addOrderProduct, setAddOrderProduct] = useState({
+        buyNowProductQuantity: 1,
+        buyNowProductPrice: 0,
+        buyNowProductStates: false,
+        productData: {},
+
+
+    })
+    const dispatch = useDispatch()
     let { id } = useParams()
+
     const history = useHistory()
-    // console.log(id)
+    const product = useSelector((state) => state.product)
+    // console.log(product)
+    const loadSingleProduct = async () => {
+        const response = await axios.post('https://guarded-badlands-63189.herokuapp.com/products/singleProduct', {
+            id: id
+        }).catch(err => console.log(err))
+        dispatch(selectedProduct(response.data))
+    }
     useEffect(() => {
-            axios.post('https://blooming-ocean-38409.herokuapp.com/products/singleProduct',{
-                id:id
-            })
-            .then(res => setSingleData(res.data))
-            .catch(ex => console.error(ex))
-    }, [id])
-    // console.log(singleData)
-    const PdDetails = makeStyles((theme) => ({
-        details: {
-            display: 'flex',
-            flexDirection: 'row',
+        if (id && id !== '') loadSingleProduct()
+        return () => {
+            dispatch(removeSelectedProduct())
         }
-    }))
-    const classes = PdDetails()
+    }, [id])
+
     const handleCountPlus = () => {
         if (value < 5) {
             setValue(value + 1)
@@ -40,58 +51,66 @@ const ProductDetails = () => {
             setValue(value - 1)
         }
     }
-    const handleAddToCart = () => {
-        const {_id,price,description,title,image,category} = singleData 
-       if(userDataInfo.isSignedIn){
-        axios.post('https://blooming-ocean-38409.herokuapp.com/cartProduct', {
-            id: _id,
-            description : description,
-            category:category,
-            title:title,
-            price:price*value,
-            quantity:value,
-            image:image,
-            email:userDataInfo.email
-          })
-          .then(res => {
-              if(res){
-                history.push('/addToCart')
-              }
-          }) 
-       }
-        
-       if (!userDataInfo.isSignedIn) {
+    const handleAddToCart = async () => {
+        const { _id, price, description, title, image, category } = product
+        if (userDataInfo.isSignedIn) {
+            await axios.post('https://guarded-badlands-63189.herokuapp.com/cartProduct', {
+                id: _id,
+                description: description,
+                category: category,
+                title: title,
+                price: price * value,
+                quantity: value,
+                image: image,
+                email: userDataInfo.email
+            })
+                .then(res => {
+                    if (res) {
+                        history.push('/addToCart')
+                    }
+                })
+        }
+
+        if (!userDataInfo.isSignedIn) {
             history.push('/login')
         }
     }
+    useEffect(()=>{
+        dispatch(removeBuyNowProduct())
+    },[])
+    useEffect(() => {
+        const addData = { ...addOrderProduct }
+        addData.buyNowProductPrice = product.price * value
+        addData.buyNowProductQuantity = value
+        addData.buyNowProductStates = true
+        addData.productData = product
+        setAddOrderProduct(addData)
+    }, [value,product])
     const handleBuyNow = (data) => {
-        const addBuyData = {...userDataInfo}
-        addBuyData.buyNowProductQuantity = value
-        addBuyData.buyNowProductPrice = singleData.price*value
-        setUserDataInfo(addBuyData)
-        // if (userDataInfo.isSignedIn) {
-
-            history.push("/buyNow/"+data)
-        // }
-        // else if (!userDataInfo.isSignedIn) {
-        //     history.push('/login')
-        // }
+        if(userDataInfo.isSignedIn){
+        dispatch(selectBuyNowProduct(addOrderProduct))
+        if (addOrderProduct.buyNowProductStates) history.push("/buyNow/" + data)
+        }
+        else {
+            history.push('/login')
+        }
     }
     const initialPrice = '00.0'
     return (
-        <Container maxWidth="md" className="mt-5">
+       <div>
+            <Container maxWidth="md" className="mt-5">
             <Card>
-               {singleData._id ? <Grid container direction="row" spacing={2}>
+                {product._id ? <Grid container direction="row" spacing={2}>
                     <Grid item xs={12} sm={12} md={6}>
-                        <img xs={12} src={singleData.image} alt={singleData.id} title={singleData.title} style={{ width: '400px', height: "400px", padding: '20px 0' }} />
+                        <img xs={12} src={product.image} alt={product.id} title={product.title} style={{ width: '400px', height: "400px", padding: '20px 0' }} />
                     </Grid>
                     <Grid item xs={12} sm={12} md={6}>
                         <CardContent >
                             <Typography variant="h4" gutterBottom>
-                                {singleData.category}
+                                {product.category}
                             </Typography>
                             <Typography variant="subtitle1" gutterBottom>
-                                {singleData.title}
+                                {product.title}
                             </Typography>
                             <Typography variant="subtitle1" gutterBottom>
                                 <StarOutlinedIcon /><StarOutlinedIcon /><StarOutlinedIcon /><StarOutlinedIcon /><StarOutlinedIcon /><FavoriteBorderOutlinedIcon className="ms-5" />
@@ -100,20 +119,22 @@ const ProductDetails = () => {
                                 <AddIcon onClick={handleCountPlus} className="me-2 cursor" />{value}<RemoveOutlinedIcon onClick={handleCountMinus} className="ms-2 cursor" />
                             </Typography>
                             <Typography variant="subtitle2" gutterBottom>
-                                {singleData.description}
+                                {product.description}
                             </Typography>
                             <Typography variant="h5" gutterBottom>
-                                $ {!singleData.price ? initialPrice : singleData.price * value}
+                                $ {!product.price ? initialPrice : product.price * value}
                             </Typography>
                             <CardActions className="text-center">
-                                <Button variant="contained" onClick={()=>handleBuyNow(singleData._id)} >Buy Now</Button>
+                                <Button variant="contained" onClick={() => handleBuyNow(product._id)} >Buy Now</Button>
                                 <Button variant="outlined" onClick={handleAddToCart}>Add to Cart</Button>
                             </CardActions>
                         </CardContent>
                     </Grid>
-                </Grid> : <Grid container justifyContent="center"className="spinnerHeight" alignItems="center"><CircularProgress className="spinnerColor"/></Grid>}
+                </Grid> : <Grid container justifyContent="center" className="spinnerHeight" alignItems="center"><CircularProgress className="spinnerColor" /></Grid>}
             </Card>
         </Container>
+        <Footer/>
+       </div>
     );
 };
 

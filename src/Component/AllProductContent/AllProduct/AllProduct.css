@@ -16,6 +16,16 @@ img{
 .spinnerHeight{
     height: 300px;
 }
+.notice{
+    height: 300px;
+    align-items: center;
+    display: flex;
+}
+.MuiCardContent-root.Product_cardContent {
+    padding: 16px !important;
+    height: 135px !important;
+}
+
 .logo{
         width: 170px !important;
 }
@@ -87,4 +97,16 @@ img{
     background-position: 10px 10px; 
     background-repeat: no-repeat;
     padding: 12px 20px 12px 40px;
+    outline-color: black;
+  }
+  @media screen and (max-width: 480px) {
+    img.productImg {
+        height: 153px !important;
+    }
+  }
+  @media screen and (max-width: 413px) {
+    .MuiCardContent-root.Product_cardContent {
+        padding: 16px;
+        height: 110px;
+    }
   }

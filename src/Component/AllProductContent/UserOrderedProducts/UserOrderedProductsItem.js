@@ -17,11 +17,14 @@ const UserOrderedProductsItem = ({data}) => {
                 <Typography variant="body1">
                     {data.description}<br />
                 </Typography>
-                <Typography variant="h5">
-                   Total: ${data.price}
-                </Typography>
-                <Typography variant="subtitle1" gutterBottom>
+                {/* <Typography variant="subtitle1" gutterBottom>
                   Qty: {data.quantity}
+                </Typography> */}
+                <Typography variant="h6">
+                Subtotal ({data.quantity} Items) : ${data.price}
+                </Typography>
+                <Typography variant="h5">
+                  Total : ${data.totalPrice}
                 </Typography>
                 <Typography variant="h6">
                    <u>Address:</u> {data.userAddress.country}-{data.userAddress.city}, {data.userAddress.address}

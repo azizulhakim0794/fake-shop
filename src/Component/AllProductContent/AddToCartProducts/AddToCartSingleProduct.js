@@ -1,18 +1,17 @@
 import { CardContent, Grid, Typography, CardActions, Button, Card } from '@material-ui/core';
 import axios from 'axios';
-import React, { useContext, useEffect, useState } from 'react';
+import React, {useEffect} from 'react';
+import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import { UserContext } from '../../../App';
+import { selectBuyNowProduct, removeBuyNowProduct } from '../../../redux/actions/productActions';
 
 const AddToCartSingleProduct = ({ data }) => {
-    const [userDataInfo,setUserDataInfo] = useContext(UserContext)
-    // const [cartProducts, setCartProducts] = useState({})
-    // const [cartId, setCartId] = useState('')
+    const dispatch =useDispatch()
     const history = useHistory()
     const handleProductCancel = (data) => {
         document.getElementById(`order${data}`).style.display = 'none'
         console.log(data)
-        axios.delete('https://blooming-ocean-38409.herokuapp.com/cartProduct', {
+        axios.delete('https://guarded-badlands-63189.herokuapp.com/cartProduct', {
             headers: {
                 id: data
             }
@@ -21,14 +20,12 @@ const AddToCartSingleProduct = ({ data }) => {
                 console.log(res.data)
             })
     }
+    useEffect(()=>{
+        dispatch(removeBuyNowProduct())
+    },[data])
     const handleAddToCartFromBuy = (productId) => {
-                const updateUserDataInfo = {...userDataInfo}
-                updateUserDataInfo.AddToCartProductStates=true
-                setUserDataInfo(updateUserDataInfo)
-                console.log(userDataInfo)
-                if(userDataInfo.AddToCartProductStates){
+                dispatch(selectBuyNowProduct(data))
                     history.push('/buyNow/'+productId)
-                }
     }
     return (
         <Card className="mt-5 p-2" id={`order${data._id}`}>

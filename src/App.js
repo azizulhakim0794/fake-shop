@@ -9,7 +9,7 @@ import Header from './Component/CommonComponent/Header/Header';
 import Home from './Component/Home/Home';
 import Login from "./Component/Login/Login";
 import PrivateRoute from "./Component/Login/PrivateRoute/PrivateRoute";
-import PrivateRouteProductBuy from "./Component/Login/PrivateRouteProductBuy/PrivateRouteProductBuy";
+// import PrivateRouteProductBuy from "./Component/Login/PrivateRouteProductBuy/PrivateRouteProductBuy";
 import BuyNowProductForm from "./Component/AllProductContent/BuyNowProductForm/BuyNowProductForm";
 import UserOrderedProducts from "./Component/AllProductContent/UserOrderedProducts/UserOrderedProducts";
 export const UserContext = createContext()
@@ -22,6 +22,7 @@ function App() {
     buyNowProductQuantity:0,
     buyNowProductPrice:0,
     AddToCartProductStates:false,
+    shippingFee:7
   })
   return (
     <UserContext.Provider value={[userDataInfo, setUserDataInfo]}>

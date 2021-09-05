@@ -1,11 +1,11 @@
 import React from 'react';
-import { Route, Redirect, useLocation } from 'react-router-dom';
+import { Route, Redirect } from 'react-router-dom';
 import { useContext } from 'react';
 import { UserContext } from '../../../App';
 
 const PrivateRoute = ({children, ...rest}) => {
     const [userDataInfo] = useContext(UserContext);
-    const location = useLocation()
+    // const location = useLocation()
     // console.log(location)
     return (
         <Route

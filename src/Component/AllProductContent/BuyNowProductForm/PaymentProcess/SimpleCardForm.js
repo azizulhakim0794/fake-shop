@@ -1,57 +1,76 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
 import { Box, Button, Typography } from '@material-ui/core';
+import { useSelector } from 'react-redux';
 import axios from 'axios';
 import { UserContext } from '../../../../App';
-const SimpleCardForm = ({allFunctionalData }) => {
-    const [userDataInfo,setUserDataInfo] = useContext(UserContext)
+import paymentImage from '../../../../image/Screenshot_5.png'
+const SimpleCardForm = ({ allFunctionalData }) => {
+    const [userDataInfo, setUserDataInfo] = useContext(UserContext)
     const stripe = useStripe();
     const elements = useElements();
     const [errorMassage, setErrorMassage] = useState();
     const [paymentSuccess, setPaymentSuccess] = useState();
-    const [userAddressDataForProduct,setUserAddressDataForProduct] =useState({})
+    const buyNowProduct = useSelector((state) => state.buy_now_product)
+    const [userAddressDataForProduct, setUserAddressDataForProduct] = useState({})
     useEffect(() => {
-    
-        axios.get('https://blooming-ocean-38409.herokuapp.com/address', {
-          headers: {
-            email: userDataInfo.email
-          }
-        })
-          .then(res => {
-            setUserAddressDataForProduct(res.data)
-          })
-      }, [])
-    const handlePaymentOfOrder = (data) => {
 
+        axios.get('https://guarded-badlands-63189.herokuapp.com/address', {
+            headers: {
+                email: userDataInfo.email
+            }
+        })
+            .then(res => {
+                setUserAddressDataForProduct(res.data)
+            })
+    }, [userDataInfo.email])
+    const deleteProductFromAddToCart = async()=>{
+       await axios.delete('https://guarded-badlands-63189.herokuapp.com/cartProduct', {
+            headers: {
+                id:buyNowProduct._id
+            }
+        })
+            // .then(res => {
+            //     console.log(res.data)
+            // })
+            // .catch(error=>{
+            //     console.log(error)
+            // })
+    }
+    const handlePaymentOfOrder = async (data) => {
+        // https://guarded-badlands-63189.herokuapp.com
         // const allData = { ...info, date: new Date(), paymentId: paymentId,plans:id,userEmail:userData.email}
         if (data) {
-            axios.post('https://blooming-ocean-38409.herokuapp.com/products/userBuyProduct',{
-                id:allFunctionalData.buyNowProduct._id,
-                date:new Date(),
-                paymentId:data,
-                email:userDataInfo.email,
-                quantity:userDataInfo.buyNowProductQuantity,
-                price:userDataInfo.buyNowProductPrice,
-                description:allFunctionalData.buyNowProduct.description,
-                title:allFunctionalData.buyNowProduct.title,
-                image:allFunctionalData.buyNowProduct.image,
-                category:allFunctionalData.buyNowProduct.category,
-                userAddress:userAddressDataForProduct
+            await axios.post('https://guarded-badlands-63189.herokuapp.com/products/userBuyProduct', {
+                id: buyNowProduct.buyNowProductStates ? buyNowProduct.productData._id : buyNowProduct._id,
+                date: new Date(),
+                paymentId: data,
+                email: userDataInfo.email,
+                quantity: buyNowProduct.buyNowProductStates ? buyNowProduct.buyNowProductQuantity : buyNowProduct.quantity,
+                price: buyNowProduct.buyNowProductStates ? buyNowProduct.buyNowProductPrice : buyNowProduct.price,
+                description: buyNowProduct.buyNowProductStates ? buyNowProduct.productData.description : buyNowProduct.description,
+                title: buyNowProduct.buyNowProductStates ? buyNowProduct.productData.title : buyNowProduct.title,
+                image: buyNowProduct.buyNowProductStates ? buyNowProduct.productData.image : buyNowProduct.image,
+                category: buyNowProduct.buyNowProductStates ? buyNowProduct.productData.category : buyNowProduct.category,
+                totalPrice: buyNowProduct.buyNowProductStates ? Math.floor(buyNowProduct.buyNowProductPrice + userDataInfo.shippingFee) : Math.floor(buyNowProduct.price + userDataInfo.shippingFee),
+                userAddress: userAddressDataForProduct
             })
-            .then(res=>{
-                console.log(res)
-                if(res){
-                    const updateUserDataInfo = {...userDataInfo}
-                    updateUserDataInfo.buyNowProductQuantity = 0
-                    updateUserDataInfo.buyNowProductPrice = 0
-                    setUserDataInfo(updateUserDataInfo)
-                }
-            })
+                .then(res => {
+                    if (res) {
+                        const updateUserDataInfo = { ...userDataInfo }
+                        updateUserDataInfo.buyNowProductQuantity = 0
+                        updateUserDataInfo.buyNowProductPrice = 0
+                        setUserDataInfo(updateUserDataInfo)
+                        deleteProductFromAddToCart()
+
+                    }
+                })
 
         }
-        
+
+
     }
-    console.log(userDataInfo)
+    // console.log(userDataInfo)
     const handleSubmitForBuy = async (event) => {
         // Block native form submission.
 
@@ -81,7 +100,6 @@ const SimpleCardForm = ({allFunctionalData }) => {
             handlePaymentOfOrder(paymentMethod.id)
             setErrorMassage('')
             allFunctionalData.handleNext()
-            console.group(paymentMethod.id)
         }
 
     };
@@ -91,6 +109,14 @@ const SimpleCardForm = ({allFunctionalData }) => {
             <Typography variant="h4" align="center">
                 Place Your Order
             </Typography>
+            <Typography variant="h6" className="mt-5" align="center">
+                Demo
+            </Typography>
+            <Typography variant="subtitle1">
+                Try this Number
+            </Typography>
+            <img src={paymentImage} alt="" />
+            <br />
             <br /><br />
             <form onSubmit={handleSubmitForBuy}>
                 <Box className="p-2 bg-gray round-4">

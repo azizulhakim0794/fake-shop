@@ -44,9 +44,9 @@ const headerStyles = makeStyles((theme) => ({
   fullList: {
     width: 'auto',
   },
-  // root: {
-  //   display: 'flex',
-  // },
+  root: {
+    display: 'flex',
+  },
   appBar: {
     transition: theme.transitions.create(['margin', 'width'], {
       easing: theme.transitions.easing.sharp,

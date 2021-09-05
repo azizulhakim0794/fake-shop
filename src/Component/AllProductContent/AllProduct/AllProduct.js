@@ -1,37 +1,68 @@
 import React, { useState } from 'react';
-import { Container, Grid } from '@material-ui/core';
+import { CardActionArea, CardContent, Card, Grid, Typography, Box } from '@material-ui/core';
 import { useEffect } from 'react';
-import AllProductItem from './AllProductItem';
 import './AllProduct.css'
 import axios from 'axios'
 import { useHistory } from 'react-router-dom';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import { useDispatch, useSelector } from 'react-redux';
+import { setProducts } from '../../../redux/actions/productActions'
 const AllProduct = () => {
-    const [allData, setAllData] = useState([])
     const history = useHistory()
+    const products = useSelector((state) => state.allProducts.products)
+    const [searchValue, setSearchValue] = useState("")
+    const dispatch = useDispatch()
+
     const handleProductDetails = (event) => {
         history.push('/productDetails/' + event)
-        // console.log(event)
     }
     useEffect(() => {
-        // fetchProducts()
-        axios.get("https://blooming-ocean-38409.herokuapp.com/products/allProducts")
+        axios.get("https://guarded-badlands-63189.herokuapp.com/products/allProducts",{
+            headers:{
+                searchItem:searchValue
+            }
+        })
             .then(res => {
-                setAllData(res.data)
+                dispatch(setProducts(res.data))
             })
             .catch(err => {
                 console.log("Err: ", err);
             });
 
-    }, [])
+    }, [searchValue])
+    const allProductList = products.map((product) => {
+        const { image, _id, title, category, price } = product
+        return (<Grid item key={_id} xs={6} sm={6} md={4} lg={3} onClick={() => handleProductDetails(_id)}>
+            <CardActionArea className="">
+                <Card className="">
+                    <img src={image} alt={_id} title={title} className="productImg" style={{ width: '100%', height: "300px", }} />
+                    <CardContent className="Product_cardContent">
+                        <Typography variant="h6" gutterBottom>{category}</Typography>
+                        <Typography variant="body2" className="" gutterBottom>{title}</Typography>
+                        <Typography variant="h6" gutterBottom>$ {price}</Typography>
+                    </CardContent>
+                </Card>
+            </CardActionArea>
+        </Grid>)
+    });
+
     return (
-        <Container maxWidth="md">
+        <div>
+            <Box component="main" mt={7} mb={7}>
+                <Grid container justifyContent="center" alignItems="center" spacing={2}>
+                    <Grid item md={12} xs={12}>
+                        <input className="search-input-design me-3" placeholder="Search..." onChange={(e) => setSearchValue(e.target.value)} type="text" />
+                    </Grid>
+                    <Grid item md={2}>
+                    </Grid>
+                </Grid>
+            </Box>
             <Grid container spacing={4}>
                 {
-                    allData.length ? allData.map(data => (<AllProductItem key={data._id} handleProductDetails={handleProductDetails} data={data} />)) : <Grid container justifyContent="center"className="spinnerHeight" alignItems="center"><CircularProgress className="spinnerColor"/></Grid>
+                     products.length ? allProductList : <Grid container justifyContent="center" className="spinnerHeight" alignItems="center"><CircularProgress className="spinnerColor" /></Grid>
                 }
             </Grid>
-        </Container>
+        </div>
     );
 };
 

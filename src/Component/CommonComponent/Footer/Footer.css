@@ -1,0 +1,16 @@
+.footer {
+    padding: 53px 30px 40px 33px;
+    background-color: #1b2b38;
+    color: white;
+}
+.footer_link {
+    color: white;
+    text-decoration: none;
+}
+.footer_link:hover {
+    text-decoration:underline;
+}
+.text_footer{
+    margin: 44px 0 0px 0px !important;
+    text-align: center;
+}

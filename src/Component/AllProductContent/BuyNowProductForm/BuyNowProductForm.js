@@ -12,7 +12,7 @@ import { useHistory, useParams } from 'react-router-dom';
 import axios from 'axios';
 import { UserContext } from '../../../App';
 import PaymentProcess from './PaymentProcess/PaymentProcess';
-import Login from '../../Login/Login';
+import Footer from '../../CommonComponent/Footer/Footer';
 // import { Box } from '@material-ui/core';
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -28,9 +28,9 @@ const useStyles = makeStyles((theme) => ({
 }));
 const BuyNowProductForm = () => {
   const history = useHistory()
-  let {buyNowId} = useParams()
+  let { buyNowId } = useParams()
   const [userDataInfo] = useContext(UserContext)
-  const [addressPost,setAddressPost] = useState(true)
+  const [addressPost, setAddressPost] = useState(true)
   const [country, setCountry] = useState('')
   const [userAddressDataCheck, setUserAddressDataCheck] = useState({})
   const [city, setCity] = useState('')
@@ -42,45 +42,47 @@ const BuyNowProductForm = () => {
   const [stateError, setStateError] = useState(false)
   const [zipError, setZipError] = useState(false)
   const [addressError, setAddressError] = useState(false)
-  const formSetValue = {setCountry,setCity,setState,setZip,setAddress}
-  const formErrValue = {countryError,cityError,stateError,zipError,addressError}
-  const valueCheck = (value ,setValue) =>{
-   return()=>{ if (value == '') {
-      setValue(true)
-    }}
+  const formSetValue = { setCountry, setCity, setState, setZip, setAddress }
+  const formErrValue = { countryError, cityError, stateError, zipError, addressError }
+  const valueCheck = (value, setValue) => {
+    return () => {
+      if (value === '') {
+        setValue(true)
+      }
+    }
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
     setCountryError(false)
     setCityError(false)
-    valueCheck(country,setCountryError)
-    valueCheck(city,setCityError)
-    valueCheck(state,setStateError)
-    valueCheck(zip,setZipError)
-    valueCheck(address,setAddressError)
+    valueCheck(country, setCountryError)
+    valueCheck(city, setCityError)
+    valueCheck(state, setStateError)
+    valueCheck(zip, setZipError)
+    valueCheck(address, setAddressError)
     if (country.length && city.length && state.length && zip.length && address.length) {
-      axios.post('https://blooming-ocean-38409.herokuapp.com/address',{
-        country:country,
-        city:city,
-        state:state,
-        zip:zip,
-        address:address,
-        email:userDataInfo.email
+      await axios.post('https://guarded-badlands-63189.herokuapp.com/address', {
+        country: country,
+        city: city,
+        state: state,
+        zip: zip,
+        address: address,
+        email: userDataInfo.email
       })
-      .then(res=>{
-        if(res){
-          setAddressPost(res)
-        }
-      })
+        .then(res => {
+          if (res) {
+            setAddressPost(res)
+          }
+        })
     }
     if (!(country && city && state && zip && address)) {
       alert('Please fill the Form')
     }
 
   }
-  useEffect(()=>{
-    axios.get('https://blooming-ocean-38409.herokuapp.com/address', {
+  useEffect(() => {
+    axios.get('https://guarded-badlands-63189.herokuapp.com/address', {
       headers: {
         email: userDataInfo.email
       }
@@ -88,31 +90,33 @@ const BuyNowProductForm = () => {
       .then(res => {
         setUserAddressDataCheck(res.data)
       })
-      // return setUserAddressDataCheck({})
-  })
-  const [buyNowProduct,setBuyNowProduct] = useState({})
-  useEffect(()=>{
-    axios.post('https://blooming-ocean-38409.herokuapp.com/products/singleProduct',{
-      id:buyNowId
-  })
-  .then(res => setBuyNowProduct(res.data))
-  .catch(ex => console.error(ex))
+    // return setUserAddressDataCheck({})
+  }, [userDataInfo.email])
+  const [buyNowProduct, setBuyNowProduct] = useState({})
+  useEffect(() => {
+    axios.post('https://guarded-badlands-63189.herokuapp.com/products/singleProduct', {
+      id: buyNowId
+    })
+      .then(res => setBuyNowProduct(res.data))
+      .catch(ex => console.error(ex))
+    return () => {
+      setBuyNowProduct({})
+    }
 
+  }, [buyNowId])
 
-  },[buyNowId])
+  const getSteps = () => {
 
-  const getSteps = () =>{
-  
     return ['Shipping Address', 'Order Confirm', 'Payment information'];
   }
   function getStepContent(stepIndex) {
     switch (stepIndex) {
       case 0:
-        return userDataInfo.email? <AddressForm handleSubmit={handleSubmit} formSetValue={formSetValue} formErrValue={formErrValue} addressPost={addressPost} allFunctionalData={allFunctionalData}/> : history.push('/login');
-          case 1:
-        return <Checkout data={buyNowProduct} allFunctionalData={allFunctionalData}/>;
+        return userDataInfo.email ? <AddressForm handleSubmit={handleSubmit} formSetValue={formSetValue} formErrValue={formErrValue} addressPost={addressPost} allFunctionalData={allFunctionalData} /> : history.push('/login');
+      case 1:
+        return <Checkout allFunctionalData={allFunctionalData} />;
       case 2:
-        return <PaymentProcess allFunctionalData={allFunctionalData}/>;
+        return <PaymentProcess allFunctionalData={allFunctionalData} />;
       default:
         return 'Unknown stepIndex';
     }
@@ -122,46 +126,49 @@ const BuyNowProductForm = () => {
   const steps = getSteps();
 
   const handleNext = () => {
-    if(userAddressDataCheck.email){
+    if (userAddressDataCheck.email) {
       setActiveStep((prevActiveStep) => prevActiveStep + 1);
     }
-    else if(!userAddressDataCheck.email){
+    else if (!userAddressDataCheck.email) {
       alert('Please Fill and save the the Form')
     }
-    
+
   };
 
   const handleBack = () => {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
   };
-  const allFunctionalData = {handleBack,handleNext,buyNowProduct}
+  const allFunctionalData = { handleBack, handleNext, buyNowProduct }
 
-  
+
   return (
-    <Container className={classes.root}>
-      <Stepper activeStep={activeStep} alternativeLabel>
-        {steps.map((label) => (
-          <Step key={label}>
-            <StepLabel>{label}</StepLabel>
-          </Step>
-        ))}
-      </Stepper>
-      
-      <div>
-        {activeStep === steps.length ? (
-          <div>
-            <Box className={classes.instructions} variant="" align="center" >Your Order is SuccessFully done!!!</Box>
-            <Box align="center"  className="mt-5">
-            <Button onClick={()=> history.push('/myOrderedProducts')}>Go My Orders</Button>
-            </Box>
-          </div>
-        ) : (
-          <div>
-            <Box className={classes.instructions}>{getStepContent(activeStep)}</Box>
-          </div>
-        )}
-      </div>
-    </Container>
+    <div>
+      <Container className={classes.root}>
+        <Stepper activeStep={activeStep} alternativeLabel>
+          {steps.map((label) => (
+            <Step key={label}>
+              <StepLabel>{label}</StepLabel>
+            </Step>
+          ))}
+        </Stepper>
+
+        <div>
+          {activeStep === steps.length ? (
+            <div>
+              <Box className={classes.instructions} variant="" align="center" >Your Order is SuccessFully done!!!</Box>
+              <Box align="center" className="mt-5">
+                <Button onClick={() => history.push('/myOrderedProducts')}>Go My Orders</Button>
+              </Box>
+            </div>
+          ) : (
+            <div>
+              <Box className={classes.instructions}>{getStepContent(activeStep)}</Box>
+            </div>
+          )}
+        </div>
+      </Container>
+      <Footer />
+    </div>
   );
 };
 

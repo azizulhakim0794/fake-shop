@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext} from 'react';
 import './Login.css'
 import "firebase/auth";
 import firebase from 'firebase/app';
@@ -58,13 +58,12 @@ const useLoginStyles = makeStyles((theme) => ({
   }
 }));
 const Login = () => {
-  const [loadReq] = useState(false)
+  // const [loadReq] = useState(false)
   const [userDataInfo, setUserDataInfo] = useContext(UserContext)
   const history = useHistory()
   const location = useLocation()
   const classes = useLoginStyles();
   const { from } = location.state || { from: { pathname: "/" } };
-  console.log(location)
   if (firebase.apps.length === 0) {
     firebase.initializeApp(firebaseConfig)
   }
@@ -78,7 +77,6 @@ const Login = () => {
       .then((result) => {
         /** @type {firebase.auth.OAuthCredential} */
         const user = result.user;
-        console.log(user)
         const { displayName, email, uid, photoURL } = user
         const newUserData = { ...userDataInfo }
         newUserData.isSignedIn = true
@@ -109,11 +107,10 @@ const Login = () => {
     e.preventDefault()
 
   }
-  const handleSing = () => {
-    alert('This Method is not Work. For Sing in and login try Google with Sing in')
-  }
+  // const handleSing = () => {
+  //   alert('This Method is not Work. For Sing in and login try Google with Sing in')
+  // }
 
-  console.log()
   return (
     <div className="">
       <Container component="main" maxWidth="xs">
