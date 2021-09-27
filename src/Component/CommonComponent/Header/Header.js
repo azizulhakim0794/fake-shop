@@ -149,7 +149,6 @@ const Header = () => {
     }
    
   }
- console.log(addToCartData)
   return (
     <div className="nav_margin">
       <AppBar position="fixed">
