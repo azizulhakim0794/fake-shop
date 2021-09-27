@@ -1,12 +1,13 @@
 import { CardContent, Grid, Typography, CardActions, Button, Card } from '@material-ui/core';
 import axios from 'axios';
-import React, {useEffect} from 'react';
+import React, { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
+import { LazyLoadImage } from 'react-lazy-load-image-component';
+import 'react-lazy-load-image-component/src/effects/blur.css';
 import { selectBuyNowProduct, removeBuyNowProduct } from '../../../redux/actions/productActions';
-
 const AddToCartSingleProduct = ({ data }) => {
-    const dispatch =useDispatch()
+    const dispatch = useDispatch()
     const history = useHistory()
     const handleProductCancel = (data) => {
         document.getElementById(`order${data}`).style.display = 'none'
@@ -20,18 +21,23 @@ const AddToCartSingleProduct = ({ data }) => {
                 console.log(res.data)
             })
     }
-    useEffect(()=>{
+    useEffect(() => {
         dispatch(removeBuyNowProduct())
-    },[data])
+    }, [data])
     const handleAddToCartFromBuy = (productId) => {
-                dispatch(selectBuyNowProduct(data))
-                    history.push('/buyNow/'+productId)
+        dispatch(selectBuyNowProduct(data))
+        history.push('/buyNow/' + productId)
     }
     return (
         <Card className="mt-5 p-2" id={`order${data._id}`}>
             <Grid container >
                 <Grid item sm={6}>
-                    <img src={data.image} alt={data.id} title={data.title} style={{ width: '80%', height: "400px", }} />
+                    <LazyLoadImage
+                        alt={data.id}
+                        height={400}
+                        src={data.image} // use normal <img> attributes as props
+                        title={data.title}
+                        effect="blur" />
                 </Grid>
                 <Grid item sm={6}>
                     <CardContent>
@@ -48,7 +54,7 @@ const AddToCartSingleProduct = ({ data }) => {
                             Qty: {data.quantity}
                         </Typography>
                         <CardActions>
-                            <Button variant="contained" color="primary" onClick={()=>handleAddToCartFromBuy(data.id)}> Buy </Button>
+                            <Button variant="contained" color="primary" onClick={() => handleAddToCartFromBuy(data.id)}> Buy </Button>
                             <Button variant="contained" onClick={() => handleProductCancel(data._id)}> Cancel </Button>
                         </CardActions>
                     </CardContent>

@@ -5,8 +5,6 @@ import { UserContext } from '../../../App';
 
 const PrivateRoute = ({children, ...rest}) => {
     const [userDataInfo] = useContext(UserContext);
-    // const location = useLocation()
-    // console.log(location)
     return (
         <Route
       {...rest}

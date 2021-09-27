@@ -1,9 +1,8 @@
-import React from 'react';
+import React, { lazy } from 'react';
 import './Home.css'
 import {Container } from '@material-ui/core';
-import './Home.css'
-import AllProduct from '../AllProductContent/AllProduct/AllProduct';
-import Footer from '../CommonComponent/Footer/Footer'
+const Footer = lazy(() => import('../CommonComponent/Footer/Footer'));
+const AllProduct = lazy(() => import('../AllProductContent/AllProduct/AllProduct'));
 const Home = () => {
   // const searchRef = useRef("")
   // const handleValue = (e) => {
@@ -15,7 +14,7 @@ const Home = () => {
 
   // }
   return (
-    <div className="home">
+    <div className="">
       <Container maxWidth="lg">
       <AllProduct />
     </Container>

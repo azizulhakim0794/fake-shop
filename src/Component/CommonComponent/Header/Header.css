@@ -1,3 +1,9 @@
 .btnLogin{
     justify-content: flex-end;
 }
+.nav_margin{
+    margin-bottom: 115px;
+}
+.logo{
+    width: 100%;
+}

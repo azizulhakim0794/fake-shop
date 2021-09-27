@@ -10,6 +10,29 @@ img{
 .p-2{
     padding: 20px;
 }
+#root {
+    height: 100%;
+    overflow-x: hidden;
+  }
+  
+  .List {
+    border: 1px solid #d9dddd;
+  }
+  .d-none{
+      display: none !important;
+  }
+  
+  .ListItemEven,
+  .ListItemOdd {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .ListItemEven {
+    background-color: #f8f8f0;
+}
+  
 .MuiCircularProgress-colorPrimary {
     color: #1b2b38 !important;
 }

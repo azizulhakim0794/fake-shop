@@ -67,10 +67,7 @@ const Login = () => {
   if (firebase.apps.length === 0) {
     firebase.initializeApp(firebaseConfig)
   }
-  // console.log(location.state)
-  // console.log(userDataInfo)
   const singInWithGoogle = (e) => {
-
     const provider = new firebase.auth.GoogleAuthProvider();
     firebase.auth()
       .signInWithPopup(provider)
@@ -100,17 +97,9 @@ const Login = () => {
           console.log(errorMessage, errorCode, email, credential);
         }
       });
-
-
-
-
     e.preventDefault()
 
   }
-  // const handleSing = () => {
-  //   alert('This Method is not Work. For Sing in and login try Google with Sing in')
-  // }
-
   return (
     <div className="">
       <Container component="main" maxWidth="xs">

@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { lazy, useContext, useEffect, useState } from 'react';
 import { Button, Card, CardActions, CardContent, CircularProgress, Container, Grid, Typography } from '@material-ui/core';
 import { useHistory, useParams } from 'react-router-dom';
 import axios from 'axios'
@@ -10,7 +10,7 @@ import { UserContext } from '../../../App';
 import { useDispatch } from 'react-redux';
 import { selectedProduct, removeSelectedProduct, selectBuyNowProduct, removeBuyNowProduct } from '../../../redux/actions/productActions';
 import { useSelector } from 'react-redux';
-import Footer from '../../CommonComponent/Footer/Footer';
+const Footer = lazy(() => import('../../CommonComponent/Footer/Footer'));
 const ProductDetails = () => {
     const [value, setValue] = useState(1)
     const [userDataInfo] = useContext(UserContext)
@@ -24,18 +24,15 @@ const ProductDetails = () => {
     })
     const dispatch = useDispatch()
     let { id } = useParams()
-
     const history = useHistory()
     const product = useSelector((state) => state.product)
-    // console.log(product)
-    const loadSingleProduct = async () => {
-        const response = await axios.post('https://guarded-badlands-63189.herokuapp.com/products/singleProduct', {
-            id: id
-        }).catch(err => console.log(err))
-        dispatch(selectedProduct(response.data))
-    }
     useEffect(() => {
-        if (id && id !== '') loadSingleProduct()
+        // if (id && id !== '') loadSingleProduct()
+        axios.post('https://guarded-badlands-63189.herokuapp.com/products/singleProduct',{
+            id:id
+        })
+        .then(res => dispatch(selectedProduct(res.data)))
+        .catch(err=>console.log(err))
         return () => {
             dispatch(removeSelectedProduct())
         }

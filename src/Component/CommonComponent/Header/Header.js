@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext,useEffect } from 'react';
 import AppBar from '@material-ui/core/AppBar';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
@@ -18,23 +18,19 @@ import InboxIcon from '@material-ui/icons/MoveToInbox';
 import MailIcon from '@material-ui/icons/Mail';
 import { useTheme } from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
-// import CssBaseline from '@material-ui/core/CssBaseline';
+import axios from 'axios';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import AddShoppingCartRoundedIcon from '@material-ui/icons/AddShoppingCartRounded';
 const drawerWidth = 240;
 const headerStyles = makeStyles((theme) => ({
   btnLogin: {
-    // width: "100%",
     textAlign: "end"
   },
   toolbar: {
     backgroundColor: '#1b2b38'
   },
 
-  // menuButton: {
-  //   marginRight: 36,
-  // },
   menuButtonHidden: {
     display: 'none',
   },
@@ -62,7 +58,6 @@ const headerStyles = makeStyles((theme) => ({
     }),
   },
   drawer: {
-    // width: drawerWidth,
     flexShrink: 0,
   },
   drawerPaper: {
@@ -72,7 +67,6 @@ const headerStyles = makeStyles((theme) => ({
     display: 'flex',
     alignItems: 'center',
     padding: theme.spacing(0, 1),
-    // necessary for content to be below app bar
     ...theme.mixins.toolbar,
     justifyContent: 'flex-end',
   },
@@ -97,6 +91,8 @@ const Header = () => {
   const classes = headerStyles();
   const theme = useTheme();
   const history = useHistory();
+  const [addToCartData, setAddToCardData] = useState([])
+  const [UserOrderedProducts, setUserOrderProducts] =useState([])
   const [userDataInfo] = useContext(UserContext)
   const handleClick = () => {
     history.push('/login')
@@ -110,11 +106,55 @@ const Header = () => {
   const handleDrawerClose = () => {
     setOpen(false);
   };
+
+  // const addToCartOparation = ()=>{
+    
+  // }
+  const loadCartProduct = async()=>{
+    await axios.get('https://guarded-badlands-63189.herokuapp.com/cartProduct', {
+      headers: {
+        email: userDataInfo.email
+      }
+    })
+      .then(res => {
+        setAddToCardData(res.data)
+      })
+  }
+  const loadUserProduct = async()=>{
+    await axios.get('https://guarded-badlands-63189.herokuapp.com/products/userOrderProducts', {
+      headers: {
+        email: userDataInfo.email
+      }
+    })
+      .then(res => {
+        setUserOrderProducts(res.data)
+  })
+}
+  useEffect(()=>{
+    loadCartProduct()
+    loadUserProduct()
+  },[addToCartData,userDataInfo.email])
+  const addToCart = async () => {
+
+    if (userDataInfo.isSignedIn) {
+     
+        
+        if(addToCartData.length >= 1){
+          history.push('/addToCart')
+        }
+    }
+
+    else{
+      history.push('/login')
+    }
+   
+  }
+ console.log(addToCartData)
   return (
-    <div className={classes.root}>
-      <AppBar position="sticky">
+    <div className="nav_margin">
+      <AppBar position="fixed">
         <Toolbar className={classes.toolbar}>
-        <IconButton
+          <IconButton
             color="inherit"
             aria-label="open drawer"
             onClick={handleDrawerOpen}
@@ -127,8 +167,8 @@ const Header = () => {
             Fake-Shop
           </Typography>
           <Grid container direction="row" justifyContent="flex-end" alignItems="center">
-          <Box component="span" mr={1}> <Button size="small" color="inherit" onClick={()=>history.push('/')}>Home</Button></Box>
-{/*           
+            <Box component="span" mr={1}> <Button size="small" color="inherit" onClick={() => history.push('/')}>Home</Button></Box>
+            {/*           
             <Box component="span" mr={1}>
               <IconButton color="inherit" onClick={() => history.push('/addToCart')}>
                 <ShoppingCartIcon />
@@ -142,33 +182,39 @@ const Header = () => {
         className={classes.drawer}
         anchor="left"
         open={open}
-        onClose={()=> setOpen(false)}
+        onClose={() => setOpen(false)}
         classes={{
           paper: classes.drawerPaper,
         }}
       >
         <div className={classes.drawerHeader}>
-        <Box component="span" mr={2}>
-        <Typography variant="h6">
-            Fake-Shop
-          </Typography>
-        </Box>
+          <Box component="span" mr={2}>
+            <Typography variant="h6">
+              Fake-Shop
+            </Typography>
+          </Box>
           <IconButton onClick={handleDrawerClose}>
             {theme.direction === 'ltr' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
           </IconButton>
         </div>
         <Divider />
         <List>
-            <ListItem button onClick={()=>history.push('/addToCart')}>
-              <ListItemIcon><AddShoppingCartRoundedIcon/></ListItemIcon>
-              <ListItemText primary="Cart Products" />
-            </ListItem>
+          {addToCartData.length === 0 ?<ListItem button disabled onClick={addToCart}>
+            <ListItemIcon><AddShoppingCartRoundedIcon /></ListItemIcon>
+            <ListItemText primary="Cart Products" />
+          </ListItem>:<ListItem button onClick={addToCart}>
+            <ListItemIcon><AddShoppingCartRoundedIcon /></ListItemIcon>
+            <ListItemText primary="Cart Products" />
+          </ListItem>}
         </List>
         <List>
-            <ListItem button onClick={()=>history.push(userDataInfo.email?'/myOrderedProducts': '/login')}>
-              <ListItemIcon><ShoppingCartIcon/></ListItemIcon>
-              <ListItemText primary="My Orders" />
-            </ListItem>
+          {UserOrderedProducts.length === 0 ?  <ListItem button disabled onClick={() => history.push(userDataInfo.email ? '/myOrderedProducts' : '/login')}>
+            <ListItemIcon><ShoppingCartIcon /></ListItemIcon>
+            <ListItemText primary="My Orders" />
+          </ListItem>: <ListItem button onClick={() => history.push(userDataInfo.email ? '/myOrderedProducts' : '/login')}>
+            <ListItemIcon><ShoppingCartIcon /></ListItemIcon>
+            <ListItemText primary="My Orders" />
+          </ListItem>}
         </List>
         <Divider />
         <List>

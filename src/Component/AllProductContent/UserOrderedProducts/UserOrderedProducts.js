@@ -1,10 +1,9 @@
 import { Container, Grid, Typography } from '@material-ui/core';
 import axios from 'axios';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { lazy, useContext, useEffect, useState } from 'react';
 import { UserContext } from '../../../App';
-import Footer from '../../CommonComponent/Footer/Footer';
 import UserOrderedProductsItem from './UserOrderedProductsItem';
-
+const Footer = lazy(() => import('../../CommonComponent/Footer/Footer'));
 const UserOrderedProducts = () => {
   const [userOrderProductsData, setUserOrderProductsData] = useState([])
   const [userDataInfo] = useContext(UserContext)

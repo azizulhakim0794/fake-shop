@@ -27,7 +27,7 @@ const Footer = () => {
                         <Link className="footer_link" to="">Terms & Conditions</Link>
                     </Grid>
                 </Grid>
-                <Grid item>
+                <Grid item className="">
                     <Grid container direction="column">
                         <Typography variant="h5"> Customer Care</Typography><br />
                         <Link className="footer_link" to=""> Help Center</Link>

@@ -7,6 +7,9 @@
     color: white;
     text-decoration: none;
 }
+.pe-3 {
+    padding-right: 30px;
+}
 .footer_link:hover {
     text-decoration:underline;
 }
