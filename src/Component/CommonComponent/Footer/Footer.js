@@ -37,7 +37,7 @@ const Footer = () => {
                     </Grid>
                 </Grid>
             </Grid>
-            <Typography className="text_footer" variant="subtitle1">Copyright © {new Date().getFullYear()} fake-shop.com</Typography>
+            <Typography className="text_footer" variant="subtitle1">Copyright © {new Date().getFullYear()} by <a href="https://personal-portfolio-74d3d.firebaseapp.com/">Tamzid</a></Typography>
         </div>
     );
 };
