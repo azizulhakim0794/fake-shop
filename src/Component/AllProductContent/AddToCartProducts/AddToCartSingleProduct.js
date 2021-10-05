@@ -4,6 +4,7 @@ import React, { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
+import { Skeleton } from '@mui/material';
 import 'react-lazy-load-image-component/src/effects/blur.css';
 import { selectBuyNowProduct, removeBuyNowProduct } from '../../../redux/actions/productActions';
 const AddToCartSingleProduct = ({ data }) => {
@@ -38,7 +39,7 @@ const AddToCartSingleProduct = ({ data }) => {
                         src={data.image} // use normal <img> attributes as props
                         title={data.title}
                         effect="blur" />
-                </Grid>
+                </Grid> 
                 <Grid item sm={6}>
                     <CardContent>
                         <Typography variant="h4">
@@ -51,7 +52,7 @@ const AddToCartSingleProduct = ({ data }) => {
                             $ {data.price}
                         </Typography>
                         <Typography variant="subtitle1" gutterBottom>
-                            Qty: {data.quantity}
+                            Qty: {data.quantity} 
                         </Typography>
                         <CardActions>
                             <Button variant="contained" color="primary" onClick={() => handleAddToCartFromBuy(data.id)}> Buy </Button>

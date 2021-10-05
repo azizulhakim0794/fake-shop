@@ -18,14 +18,14 @@ const AddToCartProducts = () => {
         setData(res.data)
       })
   }, [userDataInfo.email])
-  console.log(data)
+  // console.log(data)
   return (
     <div>
       <Container size="md">
-        <Grid container direction="column" alignItems="center" spacing={4}>
+        <Grid container spacing={4}>
           {data.length === 0 && 
             <Grid container >
-              <Grid item sm={6}>
+            <Grid item sm={6}>
                 <Skeleton variant="rectangular" width={300} height={400} />
               </Grid>
               <Grid item sm={6}>

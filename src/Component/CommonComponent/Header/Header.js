@@ -19,6 +19,7 @@ import MailIcon from '@material-ui/icons/Mail';
 import { useTheme } from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
 import axios from 'axios';
+import Badge from '@mui/material/Badge';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import AddShoppingCartRoundedIcon from '@material-ui/icons/AddShoppingCartRounded';
@@ -110,8 +111,28 @@ const Header = () => {
   // const addToCartOparation = ()=>{
     
   // }
-  const loadCartProduct = async()=>{
-    await axios.get('https://guarded-badlands-63189.herokuapp.com/cartProduct', {
+//   const loadCartProduct = async()=>{
+//     await axios.get('https://guarded-badlands-63189.herokuapp.com/cartProduct', {
+//       headers: {
+//         email: userDataInfo.email
+//       }
+//     })
+//       .then(res => {
+//         setAddToCardData(res.data)
+//       })
+//   }
+//   const loadUserProduct = async()=>{
+//     await axios.get('https://guarded-badlands-63189.herokuapp.com/products/userOrderProducts', {
+//       headers: {
+//         email: userDataInfo.email
+//       }
+//     })
+//       .then(res => {
+//         setUserOrderProducts(res.data)
+//   })
+// }
+  useEffect(()=>{
+    axios.get('https://guarded-badlands-63189.herokuapp.com/cartProduct', {
       headers: {
         email: userDataInfo.email
       }
@@ -119,9 +140,9 @@ const Header = () => {
       .then(res => {
         setAddToCardData(res.data)
       })
-  }
-  const loadUserProduct = async()=>{
-    await axios.get('https://guarded-badlands-63189.herokuapp.com/products/userOrderProducts', {
+  },[addToCartData,userDataInfo.email])
+  useEffect(()=>{
+    axios.get('https://guarded-badlands-63189.herokuapp.com/products/userOrderProducts', {
       headers: {
         email: userDataInfo.email
       }
@@ -129,10 +150,6 @@ const Header = () => {
       .then(res => {
         setUserOrderProducts(res.data)
   })
-}
-  useEffect(()=>{
-    loadCartProduct()
-    loadUserProduct()
   },[addToCartData,userDataInfo.email])
   const addToCart = async () => {
 
@@ -199,19 +216,19 @@ const Header = () => {
         <Divider />
         <List>
           {addToCartData.length === 0 ?<ListItem button disabled onClick={addToCart}>
-            <ListItemIcon><AddShoppingCartRoundedIcon /></ListItemIcon>
+            <ListItemIcon><Badge className="iconCount" color="secondary" badgeContent={0} showZero ><AddShoppingCartRoundedIcon /></Badge></ListItemIcon>
             <ListItemText primary="Cart Products" />
           </ListItem>:<ListItem button onClick={addToCart}>
-            <ListItemIcon><AddShoppingCartRoundedIcon /></ListItemIcon>
+            <ListItemIcon><Badge className="iconCount" badgeContent={addToCartData.length} color="secondary"><AddShoppingCartRoundedIcon /></Badge></ListItemIcon>
             <ListItemText primary="Cart Products" />
           </ListItem>}
         </List>
         <List>
           {UserOrderedProducts.length === 0 ?  <ListItem button disabled onClick={() => history.push(userDataInfo.email ? '/myOrderedProducts' : '/login')}>
-            <ListItemIcon><ShoppingCartIcon /></ListItemIcon>
+            <ListItemIcon><Badge color="secondary" badgeContent={0} showZero ><ShoppingCartIcon /></Badge></ListItemIcon>
             <ListItemText primary="My Orders" />
           </ListItem>: <ListItem button onClick={() => history.push(userDataInfo.email ? '/myOrderedProducts' : '/login')}>
-            <ListItemIcon><ShoppingCartIcon /></ListItemIcon>
+            <ListItemIcon><Badge badgeContent={UserOrderedProducts.length} color="secondary"><ShoppingCartIcon /></Badge></ListItemIcon>
             <ListItemText primary="My Orders" />
           </ListItem>}
         </List>

@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useState } from 'react';
 import { CardActionArea, CardContent, Card, Grid, Typography, Box } from '@material-ui/core';
 import { useEffect } from 'react';
 import './AllProduct.css'
@@ -7,11 +7,8 @@ import { useHistory } from 'react-router-dom';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { useDispatch, useSelector } from 'react-redux';
 import { setProducts } from '../../../redux/actions/productActions'
-import { FixedSizeGrid, FixedSizeList } from "react-window";
 import { LazyLoadImage } from 'react-lazy-load-image-component';
 import 'react-lazy-load-image-component/src/effects/blur.css';
-import AutoSizer from 'react-virtualized-auto-sizer';
-import { WindowScroller } from 'react-virtualized';
 // import { AutoSizer, CellMeasurer, CellMeasurerCache, List } from 'react-virtualized';
 const AllProduct = () => {
     const history = useHistory()
